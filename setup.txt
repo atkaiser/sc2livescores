@@ -1,0 +1,52 @@
+# Setting up a new server:
+
+# First create a new user:
+useradd <user>
+passwd <user>
+# Create folder for user and chown it
+chown <user>:<user> /home/<user>
+chmod 0700 /home/<user>
+
+# Make sure the user is using bash shell
+sudo chsh -s /bin/bash <username>
+
+# add them to the sudoers file
+visudo
+
+# add ssh keys
+Add to .ssh/authorized keys
+
+# create ssh key
+# https://help.github.com/articles/generating-ssh-keys#platform-linux
+ssh-keygen -t rsa -C "your_email@example.com"
+
+# Set up github
+sudo apt-get install git
+# Upload ssh key to github
+
+# copy over .vimrc file to home
+# copy over .bash_profile file to home
+
+# install pip
+sudo apt-get install python-pip
+sudo apt-get install python-dev
+sudo apt-get upgrade gcc
+
+# Virtual env stuff
+#http://www.jeffknupp.com/blog/2013/12/18/starting-a-django-16-project-the-right-way/
+
+#install virtualenv
+pip install virtualenvwrapper
+# set up .profile
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/directory-you-do-development-in
+source /usr/local/bin/virtualenvwrapper.sh
+# install django
+pip install django
+
+# install south (at some point)
+pip install south
+
+# Fabric for deployment
+pip install fabric
+
