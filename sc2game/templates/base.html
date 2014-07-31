@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    
+    {% load staticfiles %}
+    
+    <head>
+        <title>{% block title %}SC2 Live Scores{% endblock %}</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="/static/foundation/css/normalize.css" rel="stylesheet"/>
+        <link href="/static/foundation/css/foundation.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" type="text/css" href="{% static 'sc2game/style.css' %}" />
+        <script src="/static/foundation/js/vendor/modernizr.js"></script>
+    </head>
+    
+    <body>
+        <nav class="top-bar">
+            <ul class="title-area">
+                <li class="name">
+                    <h1><a href="http://akaiser-server.mooo.com:3000/">SC2 Live Scores</a></h1>
+                </li>
+            </ul>
+            <section class="top-bar-section">
+                <ul class="right">
+                    <li><a href="javascript:document.location.reload(true);">Reload</a></li>
+                </ul>
+            </section>
+        </nav>  
+        <div id="content">
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

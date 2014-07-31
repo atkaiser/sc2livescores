@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title%}SC2 Live Scores: {{ stream_obj.name}} {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="small-12 text-center">
+        <h5>
+            {{ stream_obj.name }}
+        </h5>
+    </div>
+</div>
+
+{% if not game.game_on %}
+    <div class="row">
+        <div class="small-12 text-center">
+            This was the last state of the game, there isn't one on now
+        </div
+    </div>
+{% endif %}
+
+{%for obj in cons_row_objs %}
+    <div class="row">
+        <div class="small-4 columns text-center">
+            {{ obj.player_1 }}
+        </div>
+        <div class="small-4 columns text-center">
+            {{ obj.name }}
+        </div>
+        <div class="small-4 columns text-center">
+            {{ obj.player_2 }}
+        </div>
+    </div>
+{% endfor %}
+
+{%for obj in optional_row_objs %}
+    <div class="row">
+        <div class="small-4 columns text-center">
+            {{ obj.player_1 }}
+        </div>
+        <div class="small-4 columns text-center">
+            {{ obj.name }}
+        </div>
+        <div class="small-4 columns text-center">
+            {{ obj.player_2 }}
+        </div>
+    </div>
+{% endfor %}
+
+<div class="row">
+    <div class="small-3 small-centered text-center columns">
+        Time: {{ game.current_time }}
+    </div>
+</div>
+
+<div class="row">
+    <div class="small-3 small-centered text-center columns">
+        Map: {{ game.on_map }}
+    </div>
+</div>
+
+{% if bracket %}
+    <div class="row">
+        <div class="small-3 small-centered text-center columns">
+            <a href={{ bracket.url }}>Bracket</a>
+        </div>
+    </div>
+{% endif %}
+
+
+{% for stream in streams %}
+    {% if stream.name != stream_obj.name %}
+        <div class="row">
+            <div class="small-12 small-centered text-center columns">
+                <a class="button" href="/{{ stream.url }}">{{stream.name}}</a>
+            </div>
+        </div>
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

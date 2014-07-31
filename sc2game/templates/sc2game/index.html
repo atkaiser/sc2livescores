@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="small-12 text-center">
+        <h4>
+            Streams currently running:
+        </h4>
+    </div>
+</div>
+
+{% for stream in streams %}
+    <div class="row">
+        <div class="small-12 small-centered text-center columns">
+            <a class="button" href="/{{ stream.url }}">{{stream.name}}</a>
+        </div>
+    </div>
+{% endfor %}
+
+{% endblock %}
