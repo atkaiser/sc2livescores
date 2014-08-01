@@ -1,5 +1,8 @@
 # Setting up a new server:
 
+# Set up swap stuff
+# https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04
+
 # First create a new user:
 useradd <user>
 passwd <user>
@@ -20,6 +23,9 @@ Add to .ssh/authorized keys
 # https://help.github.com/articles/generating-ssh-keys#platform-linux
 ssh-keygen -t rsa -C "your_email@example.com"
 
+#update apt-get
+sudo apt-get update
+
 # Set up github
 sudo apt-get install git
 # Upload ssh key to github
@@ -31,6 +37,11 @@ sudo apt-get install git
 sudo apt-get install python-pip
 sudo apt-get install python-dev
 sudo apt-get upgrade gcc
+sudo apt-get install nodejs
+sudo apt-get install npm
+
+# Install bower
+npm install -g bower
 
 # Virtual env stuff
 #http://www.jeffknupp.com/blog/2013/12/18/starting-a-django-16-project-the-right-way/
@@ -41,12 +52,20 @@ pip install virtualenvwrapper
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/directory-you-do-development-in
 source /usr/local/bin/virtualenvwrapper.sh
+
 # install django
 pip install django
-
+# install six (not sure why I had to do this)
+pip install six
 # install south (at some point)
 pip install south
-
 # Fabric for deployment
 pip install fabric
 
+
+# Setup bower
+mpy bower install
+# Setup db
+mpy syncdb
+# colllect static files
+mpy collectstatic
