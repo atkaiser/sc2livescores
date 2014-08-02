@@ -7,3 +7,7 @@ django-zurb-foundation==5.3.0
 livestreamer==1.8.2
 numpy==1.7.1
 pep8==1.5.7
+readline==6.2.4.1
+six==1.4.1
+South==1.0
+

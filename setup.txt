@@ -53,15 +53,7 @@ export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/directory-you-do-development-in
 source /usr/local/bin/virtualenvwrapper.sh
 
-# install django
-pip install django
-# install six (not sure why I had to do this)
-pip install six
-# install south (at some point)
-pip install south
-# Fabric for deployment
-pip install fabric
-
+pip install -r requirements.txt
 
 # Setup bower
 mpy bower install
