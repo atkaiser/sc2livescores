@@ -28,38 +28,36 @@ def stream(request, stream_url):
     if bracket:
         bracket = bracket[0]
     
+    row_objs = []
     consistent_rows = ['name', 'score', 'supply', 'minerals', 'gas']
     consistent_row_names = ['Players',
                             'Current Score',
                             'Supply',
                             'Minerals',
                             'Gas']
-    cons_row_objs = []
     for field, name in zip(consistent_rows, consistent_row_names):
         row = {}
         row["player_1"] = getattr(players[0], field)
         row["player_2"] = getattr(players[1], field)
         row["name"] = name
-        cons_row_objs.append(row)
+        row_objs.append(row)
         
     optional_rows = ['workers', 'army']
     optional_row_names = ['Workers', 'Army']
-    optional_row_objs = []
     for field, name in zip(optional_rows, optional_row_names):
         if str(getattr(players[0], field)) != "-2":
             row = {}
             row["player_1"] = getattr(players[0], field)
             row["player_2"] = getattr(players[1], field)
             row["name"] = name
-            optional_row_objs.append(row)
+            row_objs.append(row)
 
     context = {
         'player_1': players[0],
         'player_2': players[1],
         'game': game,
         'stream_obj': stream_obj,
-        'cons_row_objs': cons_row_objs,
-        'optional_row_objs': optional_row_objs,
+        'row_objs': row_objs,
         'streams': streams,
         'bracket': bracket
     }
