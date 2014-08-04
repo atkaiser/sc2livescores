@@ -1,32 +1,26 @@
 import sys
-
-sys.path.append('/Users/akaiser/Documents/workspace/sc2livescores')
 import os
-
+sys.path.append(os.environ['SC2LS_PATH'])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
-
+from sc2livescores import sets
 import Image
 from datetime import datetime
 import time
 import traceback
 import ConfigParser
 import subprocess
-import tempfile
 import errno
 from livestreamer import Livestreamer
 import threading
 import re
-
 from sc2game.models import Game, Player, Stream, Bracket
 
-tesseract = '/usr/local/bin/tesseract'
-FFMPEG_BIN = "/usr/local/bin/ffmpeg"
+
 FNULL = open(os.devnull, 'w')
-temp_dir = tempfile.gettempdir()
 image_temp_file = "../temps/"
 
 parser = ConfigParser.ConfigParser()
-parser.read('/Users/akaiser/Documents/workspace/sc2livescores/configs.conf')
+parser.read(sets.conf_file)
 
 def mkdir_p(path):
     try:
@@ -44,7 +38,7 @@ def get_image(section_name, im, pic, mode):
     temp = im.crop((l, u, r, d))
     mkdir_p(image_temp_file + section_name)
     temp.save(image_temp_file + section_name + "/" + pic + '.jpeg')
-    command = [tesseract,
+    command = [sets.tesseract,
                image_temp_file + section_name + "/" + pic + '.jpeg',
                image_temp_file + section_name + "/" + pic,
                '-psm', '8']
@@ -61,7 +55,7 @@ def get_screenshot(stream, section_name):
     mkdir_p(image_temp_file + section_name)
     file_name = image_temp_file + section_name + '/vid.mp4'
     open(file_name, 'wb').write(data)
-    command = [FFMPEG_BIN,
+    command = [sets.FFMPEG_BIN,
                '-i', file_name,
                '-r', '1',
                '-t', '1',
@@ -169,6 +163,10 @@ def set_up_bracket(section_name, stream_obj):
 def get_info_from_stream(section_name):
     while True:
         try:
+            # Reload parser vars
+            parser = ConfigParser.ConfigParser()
+            parser.read(sets.conf_file)
+            
             stream_url = parser.get(section_name, 'stream_url')
             stream_obj = Stream.objects.filter(url=stream_url)
             if not stream_obj:

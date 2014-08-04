@@ -4,15 +4,10 @@ Created on Jul 16, 2014
 @author: akaiser
 '''
 
-import threading
-import time
+import sys
 
-def worker():
-    print threading.currentThread().getName(), 'Starting'
-    print 
-    time.sleep(1)
-    print threading.currentThread().getName(), 'Exiting'
+sys.path.append('/Users/akaiser/Documents/workspace/sc2livescores')
 
-if __name__ == '__main__':
-    t = threading.Thread(name='worker', target=worker, args=["something"])
-    t.start()
+from sc2livescores import sets
+
+print sets.TEST

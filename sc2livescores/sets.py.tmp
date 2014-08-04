@@ -1,0 +1,15 @@
+'''
+Created on Aug 4, 2014
+
+@author: akaiser
+'''
+
+# The values in these files need to be set and copied over to a file called
+# sets.py (this is just a template of all the values that need to be set
+
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+tesseract = 
+FFMPEG_BIN = 
+conf_file = os.path.join(BASE_DIR, 'configs.conf')
