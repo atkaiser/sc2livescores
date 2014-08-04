@@ -28,5 +28,5 @@ class Player(models.Model):
 
 
 class Bracket(models.Model):
-   url = models.CharField(max_length=100, default = "")
-   stream = models.ForeignKey(Stream)
+    url = models.CharField(max_length=100, default = "")
+    stream = models.ForeignKey(Stream)
