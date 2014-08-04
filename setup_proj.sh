@@ -1,1 +1,1 @@
-SC2LS_PATH=`pwd`
+export SC2LS_PATH=`pwd`
