@@ -6,7 +6,7 @@ def prepare_deploy():
     local("git push origin master")
 
 def deploy_prod():
-    code_dir = '/home/sc2ls-dev/dev/sc2ls'
+    code_dir = '/home/sc2ls-dev/dev/sc2livescores'
     with cd(code_dir):
         kill_prev()
         run("git pull")
