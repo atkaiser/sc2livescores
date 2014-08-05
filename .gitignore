@@ -19,6 +19,9 @@ sc2game/temps/
 # Settings file
 sc2livescores/sets.py
 
+# nohup files
+*nohup.out
+
 # Github stuff
 # Byte-compiled / optimized / DLL files
 __pycache__/
