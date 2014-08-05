@@ -58,6 +58,9 @@ source <path to proj>/setup_proj.sh
 
 mkvirtualenv <django_project>
 
+# get project from git
+# Setup tesseract configs
+
 pip install -r requirements.txt
 
 # Setup bower
