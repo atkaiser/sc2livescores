@@ -15,4 +15,4 @@ def deploy_prod():
             run("nohup python update_state.py &")
         
 def kill_prev():
-    
+    pass
