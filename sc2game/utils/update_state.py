@@ -3,7 +3,7 @@ import os
 sys.path.append(os.environ['SC2LS_PATH'])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
 from sc2livescores import sets
-import Image
+from PIL import Image
 from datetime import datetime
 import time
 import traceback
