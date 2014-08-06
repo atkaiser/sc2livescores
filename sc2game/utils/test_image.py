@@ -1,6 +1,6 @@
 import update_state
 import sys
-import Image
+from PIL import Image
 
 if len(sys.argv) != 3:
     print "Use test_image.py <image to test on> <stream name>"
