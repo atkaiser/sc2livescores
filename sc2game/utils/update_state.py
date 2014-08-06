@@ -30,12 +30,22 @@ def mkdir_p(path):
             pass
         else: raise
 
+
+def threshold(im, section_name, pic):
+    if parser.has_option(section_name, pic + '_thresh'):
+        im_grey = im.convert('L')
+        return im_grey.point(lambda x: 256 if x > int(parser.get(section_name, pic + '_thresh')) else 0)
+    else:
+        return im
+
+
 def get_image(section_name, im, pic, mode):
     l = int(parser.get(section_name, pic + '_l'))
     u = int(parser.get(section_name, pic + '_u'))
     r = int(parser.get(section_name, pic + '_r'))
     d = int(parser.get(section_name, pic + '_d'))
     temp = im.crop((l, u, r, d))
+    temp = threshold(temp, section_name, pic)
     mkdir_p(image_temp_file + section_name)
     temp.save(image_temp_file + section_name + "/" + pic + '.jpeg')
     command = [sets.tesseract,
