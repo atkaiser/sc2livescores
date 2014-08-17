@@ -11,6 +11,6 @@ ssh sc2ls-dev@sc2ls.mooo.com /bin/bash << EOF
   git pull
   nohup python manage.py runserver 0.0.0.0:3000 > logs/server.out 2> logs/server.err < /dev/null &
   cd sc2game/utils
-  nohup python update_state.py > ../../update.log 2> ../../update.err < /dev/null &
+  nohup python update_state.py > ../../logs/update.log 2> ../../logs/update.err < /dev/null &
 EOF
 
