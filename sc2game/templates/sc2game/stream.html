@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load tz %}
 
 {% block title %}SC2 Live Scores: {{ stream_obj.name}} {% endblock %}
 
@@ -14,8 +15,9 @@
 {% if not game.game_on %}
     <div class="row">
         <div class="small-12 text-center">
-            This was the last state of the game, there isn't one on now
-        </div
+            This was the last state of the game, there isn't one on now. </br>
+            Last game was at: {{ game.game_off_time|timezone:"America/Los_Angeles" }} PDT
+        </div>
     </div>
     <div class="row">
         <div class="small-12 text-center spacer">

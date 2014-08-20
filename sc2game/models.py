@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Stream(models.Model):
@@ -9,6 +10,7 @@ class Stream(models.Model):
 
 class Game(models.Model):
     game_on = models.BooleanField(default = False)
+    game_off_time = models.DateTimeField(default = timezone.now)
     on_map = models.CharField(max_length=100)
     current_time = models.CharField(max_length=10)
     current_round = models.CharField(max_length=100)

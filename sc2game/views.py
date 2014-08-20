@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 
 from sc2game.models import Game, Player, Stream, Bracket
 
+
 def index(request):
 
     streams = Stream.objects.filter(up=True)
