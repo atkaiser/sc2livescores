@@ -13,6 +13,7 @@ import errno
 from livestreamer import Livestreamer
 import threading
 import re
+from django.utils import timezone
 from sc2game.models import Game, Player, Stream, Bracket
 import logging
 
@@ -226,6 +227,8 @@ def get_info_from_stream(section_name):
 #                 logger.debug(str(key) + ": " + str(my_data[key]))
             
             if not game_live(im, my_data):
+                if game.game_on:
+                    game.game_off_time = timezone.now()
                 game.game_on = False
                 game.save()
                 time.sleep(10)
