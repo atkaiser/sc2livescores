@@ -20,8 +20,8 @@ import logging
 logger = logging.getLogger(__name__)
 handler = logging.handlers.TimedRotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
                                                     when='midnight',
-                                                    maxBytes=20,
-                                                    backupCount=5)
+                                                    backupCount=5,
+                                                    utc=True)
 handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
