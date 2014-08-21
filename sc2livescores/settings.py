@@ -52,6 +52,8 @@ MIDDLEWARE_CLASSES = (
 
 ROOT_URLCONF = 'sc2livescores.urls'
 
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
+
 WSGI_APPLICATION = 'sc2livescores.wsgi.application'
 
 # Database

@@ -3,10 +3,10 @@ import os
 sys.path.append(os.environ['SC2LS_PATH'])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
 from sc2livescores import sets
+from sc2livescores import settings
 from PIL import Image
 from datetime import datetime
 import time
-import traceback
 import ConfigParser
 import subprocess
 import errno
@@ -14,6 +14,17 @@ from livestreamer import Livestreamer
 import threading
 import re
 from sc2game.models import Game, Player, Stream, Bracket
+import logging
+
+logger = logging.getLogger(__name__)
+handler = logging.handlers.TimedRotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
+                                                    when='midnight',
+                                                    maxBytes=20,
+                                                    backupCount=5)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 
 FNULL = open(os.devnull, 'w')
@@ -124,8 +135,8 @@ def get_players(stream_obj):
     players = Player.objects.filter(stream=stream_obj)
     if len(players) != 2:
         if len(players) != 0:
-            print "Something really strange is going on here."
-            print "Deleting old players and creating new ones."
+            logger.debug("Something really strange is going on here.")
+            logger.debug("Deleting old players and creating new ones.")
             for player in players:
                 player.delete()
         players = []
@@ -190,7 +201,7 @@ def get_info_from_stream(section_name):
             set_up_bracket(section_name, stream_obj)
 
             if not stream_data:
-                print str(datetime.now()) + " There doesn't seem to be any stream available for: " + stream_url
+                logger.info(str(datetime.now()) + " There doesn't seem to be any stream available for: " + stream_url)
                 stream_obj.up = False
                 stream_obj.save()
                 time.sleep(60)
@@ -212,13 +223,13 @@ def get_info_from_stream(section_name):
             my_data = get_data_from_image(im, parser, section_name)
             
 #             for key in my_data.keys():
-#                 print str(key) + ": " + str(my_data[key])
+#                 logger.debug(str(key) + ": " + str(my_data[key]))
             
             if not game_live(im, my_data):
                 game.game_on = False
                 game.save()
                 time.sleep(10)
-                print str(datetime.now()) + " No live game for: " + stream_url
+                logger.info(str(datetime.now()) + " No live game for: " + stream_url)
                 continue
             else:
                 game.game_on = True
@@ -244,14 +255,11 @@ def get_info_from_stream(section_name):
 
             game.save()
     
-            print str(datetime.now()) + " Done with loop for: " + stream_url
+            logger.info(str(datetime.now()) + " Done with loop for: " + stream_url)
         except KeyboardInterrupt:
             exit()
-        except Exception as e:
-            print e
-            traceback.print_exc()
-            print "Something went wrong for stream: " + stream_url
-            print datetime.now()
+        except Exception as _:
+            logger.error("Something went wrong for stream: " + stream_url, exc_info=True)
 
 
 def get_stream_info_thread():
