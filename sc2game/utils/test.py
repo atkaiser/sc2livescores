@@ -5,19 +5,22 @@ Created on Jul 16, 2014
 '''
 
 import sys
+import logging
+from logging.handlers import TimedRotatingFileHandler
 
 sys.path.append('/Users/akaiser/Documents/workspace/sc2livescores')
 
 from sc2livescores import sets
-from PIL import Image
 
-def convert(val):
-    if val > 125:
-        return 256
-    return 0
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+handler = TimedRotatingFileHandler('test.log',
+                                                    when='midnight',
+                                                    backupCount=5,
+                                                    utc=True)
+handler.setLevel(logging.DEBUG)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
-im = Image.open('/Users/akaiser/Documents/workspace/sc2livescores/sc2game/temps/basetradetv/l_gas.jpeg')
-img = im.convert('L')
-cim = img.point(convert)
-cim.show()
-cim.save('/Users/akaiser/Desktop/temps/test.jpeg')
+logger.debug("log this")

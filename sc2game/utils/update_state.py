@@ -18,6 +18,7 @@ from sc2game.models import Game, Player, Stream, Bracket
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
 handler = logging.handlers.TimedRotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
                                                     when='midnight',
                                                     backupCount=5,
@@ -82,6 +83,7 @@ def get_screenshot(stream, section_name):
                '-r', '1',
                '-t', '1',
                image_temp_file + section_name + '/' + section_name + '-%d.jpeg']
+    logger.debug("Call to FFMPEG: " + str(command))
     subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
 
     im = Image.open(image_temp_file + section_name + '/' + section_name + '-1.jpeg')
@@ -272,7 +274,9 @@ def get_stream_info_thread():
 
 
 if __name__ == "__main__":
+    logger.debug("Start of function")
     for section in parser.sections():
+        logger.debug("Starting thread for " + section)
         t = threading.Thread(name=section, target=get_stream_info_thread)
         t.start()
 
