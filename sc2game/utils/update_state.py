@@ -201,6 +201,8 @@ def get_info_from_stream(section_name):
             else:
                 stream_obj = stream_obj[0]
 
+            logger.debug("Got stream object for: " + section_name)
+
             stream_data = get_stream(stream_url)
 
             logger.debug("Done getting stream for: " + section_name)
