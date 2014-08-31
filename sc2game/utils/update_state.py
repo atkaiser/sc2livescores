@@ -191,6 +191,8 @@ def get_info_from_stream(section_name):
             parser = ConfigParser.ConfigParser()
             parser.read(sets.conf_file)
             
+            logger.debug("Done reading conf for: " + section_name)
+            
             stream_url = parser.get(section_name, 'stream_url')
             stream_obj = Stream.objects.filter(url=stream_url)
             if not stream_obj:
@@ -200,6 +202,8 @@ def get_info_from_stream(section_name):
                 stream_obj = stream_obj[0]
 
             stream_data = get_stream(stream_url)
+
+            logger.debug("Done getting stream for: " + section_name)
 
             set_up_bracket(section_name, stream_obj)
 
