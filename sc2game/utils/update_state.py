@@ -188,10 +188,10 @@ def get_info_from_stream(section_name):
     while True:
         try:
             # Reload parser vars
-            parser = ConfigParser.ConfigParser()
-            parser.read(sets.conf_file)
+            #parser = ConfigParser.ConfigParser()
+            #parser.read(sets.conf_file)
             
-            logger.debug("Done reading conf for: " + section_name)
+            #logger.debug("Done reading conf for: " + section_name)
             
             stream_url = parser.get(section_name, 'stream_url')
             stream_obj = Stream.objects.filter(url=stream_url)
