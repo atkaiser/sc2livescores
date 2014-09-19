@@ -4,7 +4,7 @@ git push origin master
 
 # ssh and setup environ
 ssh sc2ls@sc2ls.mooo.com /bin/bash << EOF
-  source /home/sc2ls-dev/.bash_profile
+  source /home/sc2ls/.bash_profile
   ps aux | grep runserver | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill
   ps aux | grep update_state.py | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill
   cd /home/sc2ls/dev/sc2livescores
