@@ -2,6 +2,12 @@
 
 # Set up swap stuff
 # https://www.digitalocean.com/community/tutorials/how-to-add-swap-on-ubuntu-14-04
+# Run:
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+# Then have to edit two files
 
 # First create a new user:
 useradd <user>
@@ -14,7 +20,7 @@ chmod 0700 /home/<user>
 sudo chsh -s /bin/bash <username>
 
 # add them to the sudoers file
-visudo
+sudo adduser <username> sudo
 
 # add ssh keys
 Add to .ssh/authorized keys
@@ -37,10 +43,7 @@ sudo apt-get install git
 sudo apt-get install python-pip
 sudo apt-get install python-dev
 sudo apt-get upgrade gcc
-sudo apt-get install nodejs
-sudo apt-get install npm
-sudo apt-get install libav-tools
-sudo apt-get install libjpeg-dev
+sudo apt-get install nodejs npm libav-tools libjpeg-dev yasm
 
 # Install bower
 npm install -g bower
@@ -54,7 +57,8 @@ pip install virtualenvwrapper
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/directory-you-do-development-in
 source /usr/local/bin/virtualenvwrapper.sh
-source <path to proj>/setup_proj.sh
+cd <path to proj>/utils
+source setup_proj.sh
 
 mkvirtualenv <django_project>
 
