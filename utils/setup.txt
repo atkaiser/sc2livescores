@@ -7,7 +7,7 @@ sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
 sudo swapon /swapfile
-# Then have to edit two files
+# Then have to edit two files to make permenant
 
 # First create a new user:
 useradd <user>
@@ -23,7 +23,7 @@ sudo chsh -s /bin/bash <username>
 sudo adduser <username> sudo
 
 # add ssh keys
-Add to .ssh/authorized keys
+Add to .ssh/authorized_keys
 
 # create ssh key
 # https://help.github.com/articles/generating-ssh-keys#platform-linux
@@ -35,6 +35,9 @@ sudo apt-get update
 # Set up github
 sudo apt-get install git
 # Upload ssh key to github
+git config --global user.email "atkaiser@berkeley.edu"
+git config --global user.name "Alex Kaiser"
+# get project from git
 
 # copy over .vimrc file to home
 # copy over .bash_profile file to home
@@ -43,16 +46,19 @@ sudo apt-get install git
 sudo apt-get install python-pip
 sudo apt-get install python-dev
 sudo apt-get upgrade gcc
-sudo apt-get install nodejs npm libav-tools libjpeg-dev yasm
+sudo apt-get install nodejs npm libav-tools libjpeg-dev yasm tessercat-ocr
+
+# Fix nodejs bug
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 # Install bower
-npm install -g bower
+sudo npm install -g bower
 
 # Virtual env stuff
 #http://www.jeffknupp.com/blog/2013/12/18/starting-a-django-16-project-the-right-way/
 
 #install virtualenv
-pip install virtualenvwrapper
+sudo pip install virtualenvwrapper
 # set up .profile
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/directory-you-do-development-in
@@ -62,8 +68,7 @@ source setup_proj.sh
 
 mkvirtualenv <django_project>
 
-# get project from git
-# Setup tesseract configs
+# Setup tesseract configs in utils/sets.py
 
 pip install -r requirements.txt
 
