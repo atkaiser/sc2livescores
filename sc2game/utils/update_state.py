@@ -210,7 +210,7 @@ def get_info_from_stream(section_name):
             set_up_bracket(section_name, stream_obj)
 
             if not stream_data:
-                logger.info(str(datetime.now()) + " There doesn't seem to be any stream available for: " + stream_url)
+                logger.info("There doesn't seem to be any stream available for: " + stream_url)
                 stream_obj.up = False
                 stream_obj.save()
                 time.sleep(60)
@@ -242,7 +242,7 @@ def get_info_from_stream(section_name):
                 game.game_on = False
                 game.save()
                 time.sleep(10)
-                logger.info(str(datetime.now()) + " No live game for: " + stream_url)
+                logger.info("No live game for: " + stream_url)
                 continue
             else:
                 game.game_on = True
@@ -267,7 +267,7 @@ def get_info_from_stream(section_name):
 
             game.save()
     
-            logger.info(str(datetime.now()) + " Done with loop for: " + stream_url)
+            logger.info("Done with loop for: " + stream_url)
         except KeyboardInterrupt:
             exit()
         except Exception as _:
