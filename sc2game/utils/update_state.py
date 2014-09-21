@@ -233,6 +233,8 @@ def get_info_from_stream(section_name):
             
 #             for key in my_data.keys():
 #                 logger.debug(str(key) + ": " + str(my_data[key]))
+
+            players = get_players(stream_obj)
             
             if not game_live(im, my_data):
                 if game.game_on:
@@ -245,7 +247,6 @@ def get_info_from_stream(section_name):
             else:
                 game.game_on = True
             
-            players = get_players(stream_obj)
 
             p_l = players[0]
             p_r = players[1]
