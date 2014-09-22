@@ -1,6 +1,13 @@
 import numpy as np
 import cv2
 import cv2.cv as cv
+import sys
+
+if len(sys.argv) != 2:
+    print "Use create_config.py <image to test on>"
+    sys.exit()
+
+im_path = sys.argv[1]
 
 boxes = []
 box_name = raw_input()
@@ -19,7 +26,7 @@ def on_mouse(event, x, y, flags, params):
 
 count = 0
 
-img = cv2.imread('wcs_a2_chal-1.jpeg',0)
+img = cv2.imread(im_path, 0)
 cv2.namedWindow('real image')
 cv.SetMouseCallback('real image', on_mouse, 0)
 cv2.imshow('real image', img)
