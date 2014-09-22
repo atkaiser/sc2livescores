@@ -5,7 +5,6 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
 from sc2livescores import sets
 from sc2livescores import settings
 from PIL import Image
-from datetime import datetime
 import time
 import ConfigParser
 import subprocess
@@ -20,7 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
-                                               maxBytes=20,
+                                               maxBytes=50 * 1024 * 1024,
                                                backupCount=5)
 handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
