@@ -17,7 +17,7 @@ from sc2game.models import Game, Player, Stream, Bracket
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
                                                maxBytes=50 * 1024 * 1024,
                                                backupCount=5)
@@ -230,8 +230,8 @@ def get_info_from_stream(section_name):
 
             my_data = get_data_from_image(im, parser, section_name)
             
-#             for key in my_data.keys():
-#                 logger.debug(str(key) + ": " + str(my_data[key]))
+            for key in my_data.keys():
+                logger.debug(str(key) + ": " + str(my_data[key]))
 
             players = get_players(stream_obj)
             
