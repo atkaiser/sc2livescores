@@ -51,10 +51,11 @@ def threshold(im, section_name, pic):
 
 
 def get_image(section_name, im, pic, mode):
-    l = int(parser.get(section_name, pic + '_l'))
-    u = int(parser.get(section_name, pic + '_u'))
-    r = int(parser.get(section_name, pic + '_r'))
-    d = int(parser.get(section_name, pic + '_d'))
+    resolution = im.size[1]
+    l = int(parser.get(section_name, pic + '_l_' + resolution))
+    u = int(parser.get(section_name, pic + '_u_' + resolution))
+    r = int(parser.get(section_name, pic + '_r_' + resolution))
+    d = int(parser.get(section_name, pic + '_d_' + resolution))
     temp = im.crop((l, u, r, d))
     temp = threshold(temp, section_name, pic)
     mkdir_p(image_temp_file + section_name)
