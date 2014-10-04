@@ -160,7 +160,7 @@ def game_live(im, data):
         if re.search(r'\d+/\d+',data[field]):
             num_valid_fields += 1
             
-    for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas']:
+    for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas', 'l_score', 'r_score']:
         if data[field] >= 0:
             num_valid_fields += 1
     if num_valid_fields >= 12:
