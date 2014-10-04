@@ -52,10 +52,10 @@ def threshold(im, section_name, pic):
 
 def get_image(section_name, im, pic, mode):
     resolution = im.size[1]
-    l = int(parser.get(section_name, pic + '_l_' + resolution))
-    u = int(parser.get(section_name, pic + '_u_' + resolution))
-    r = int(parser.get(section_name, pic + '_r_' + resolution))
-    d = int(parser.get(section_name, pic + '_d_' + resolution))
+    l = int(parser.get(section_name, pic + '_l_' + str(resolution)))
+    u = int(parser.get(section_name, pic + '_u_' + str(resolution)))
+    r = int(parser.get(section_name, pic + '_r_' + str(resolution)))
+    d = int(parser.get(section_name, pic + '_d_' + str(resolution)))
     temp = im.crop((l, u, r, d))
     temp = threshold(temp, section_name, pic)
     mkdir_p(image_temp_file + section_name)
@@ -94,21 +94,21 @@ def get_data_from_image(im, parser, section_name):
     resolution = im.size[1]
     texts = ['l_name', 'r_name', 'map']
     for name in texts:
-        if parser.has_option(section_name, name + "_l_" + resolution):
+        if parser.has_option(section_name, name + "_l_" + str(resolution)):
             my_data[name] = get_image(section_name, im, name, "name")
             
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
-        if parser.has_option(section_name, supply + "_l_" + resolution):
+        if parser.has_option(section_name, supply + "_l_" + str(resolution)):
             my_data[supply] = get_image(section_name, im, supply, "supply")
             
-    if parser.has_option(section_name, "time_l_" + resolution):
+    if parser.has_option(section_name, "time_l_" + str(resolution)):
         my_data['time'] = get_image(section_name, im, "time", "time")
 
     numbers = ['l_score', 'r_score', 'l_minerals', 'r_minerals', 'l_gas', 'r_gas',
                'l_workers', 'r_workers', 'l_army', 'r_army']
     for digits_only in numbers:
-        if parser.has_option(section_name, digits_only + "_l_" + resolution):
+        if parser.has_option(section_name, digits_only + "_l_" + str(resolution)):
             data = get_image(section_name, im, digits_only, "digits_only")
             try:
                 my_data[digits_only] = int(data)
