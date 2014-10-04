@@ -91,23 +91,24 @@ def get_screenshot(stream, section_name):
 
 def get_data_from_image(im, parser, section_name):
     my_data = {}
+    resolution = im.size[1]
     texts = ['l_name', 'r_name', 'map']
     for name in texts:
-        if parser.has_option(section_name, name + "_l"):
+        if parser.has_option(section_name, name + "_l_" + resolution):
             my_data[name] = get_image(section_name, im, name, "name")
             
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
-        if parser.has_option(section_name, supply + "_l"):
+        if parser.has_option(section_name, supply + "_l_" + resolution):
             my_data[supply] = get_image(section_name, im, supply, "supply")
             
-    if parser.has_option(section_name, "time_l"):
+    if parser.has_option(section_name, "time_l_" + resolution):
         my_data['time'] = get_image(section_name, im, "time", "time")
 
     numbers = ['l_score', 'r_score', 'l_minerals', 'r_minerals', 'l_gas', 'r_gas',
                'l_workers', 'r_workers', 'l_army', 'r_army']
     for digits_only in numbers:
-        if parser.has_option(section_name, digits_only + "_l"):
+        if parser.has_option(section_name, digits_only + "_l_" + resolution):
             data = get_image(section_name, im, digits_only, "digits_only")
             try:
                 my_data[digits_only] = int(data)
