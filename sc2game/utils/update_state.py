@@ -153,8 +153,8 @@ def get_players(stream_obj):
 def game_live(im, data):
     num_valid_fields = 0
     for field in ['l_name', 'r_name']:
-        if len(data[field]) >= 3:
-            num_valid_fields += 1
+        if len(data[field]) >= 2:
+            num_valid_fields += 3
     
     for field in ['l_supply', 'r_supply']:
         if re.search(r'\d+/\d+',data[field]):
@@ -163,7 +163,7 @@ def game_live(im, data):
     for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas']:
         if data[field] >= 0:
             num_valid_fields += 1
-    if num_valid_fields >= 4:
+    if num_valid_fields >= 8:
         return True
     else:
         return False
