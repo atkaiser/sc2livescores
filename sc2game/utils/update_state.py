@@ -17,7 +17,7 @@ from sc2game.models import Game, Player, Stream, Bracket
 import logging
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
                                                maxBytes=50 * 1024 * 1024,
                                                backupCount=5)
