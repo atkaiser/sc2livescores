@@ -15,6 +15,7 @@ import re
 from django.utils import timezone
 from sc2game.models import Game, Player, Stream, Bracket
 import logging
+import pdb
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -92,10 +93,15 @@ def get_screenshot(stream, section_name):
 def get_data_from_image(im, parser, section_name):
     my_data = {}
     resolution = im.size[1]
-    texts = ['l_name', 'r_name', 'map']
+    texts = ['l_name', 'r_name']
     for name in texts:
         if parser.has_option(section_name, name + "_l_" + str(resolution)):
             my_data[name] = get_image(section_name, im, name, "name")
+        else:
+            my_data[name] = "No config"
+    
+    if parser.has_option(section_name, "map" + "_l_" + str(resolution)):
+        my_data["map"] = get_image(section_name, im, "map", "name")
             
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
