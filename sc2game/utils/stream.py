@@ -1,5 +1,4 @@
-import time, Image
-
+from PIL import Image
 import pdb
 import numpy
 import tempfile
@@ -16,17 +15,17 @@ def mkdir_p(path):
 
 FFMPEG_BIN = "/usr/local/bin/ffmpeg"
 temp_dir = tempfile.gettempdir()
-stream_dir = '/Users/akaiser/Documents/workspace/sc2livescores/sc2game/tmp-images/nation_wars/'
+stream_dir = '/Users/akaiser/Documents/workspace/sc2livescores/sc2game/tmp-images/wcs/'
 mkdir_p(stream_dir)
 
 # change to a stream that is actually online
 livestreamer = Livestreamer()
-plugin = livestreamer.resolve_url("http://www.dailymotion.com/video/xmpb7j_ogamingtv-inter_videogames?start=341")
+plugin = livestreamer.resolve_url("http://www.twitch.tv/wcs")
 streams = plugin.get_streams()
-stream = streams['720p']
+stream = streams['best']
 
 # download enough data to make sure the first frame is there
-i = 81
+i = 0
 while True:
     fd = stream.open()
     data = ''
