@@ -97,11 +97,6 @@ def get_data_from_image(im, parser, section_name):
     for name in texts:
         if parser.has_option(section_name, name + "_l_" + str(resolution)):
             my_data[name] = get_image(section_name, im, name, "name")
-        else:
-            my_data[name] = "No config"
-    
-    if parser.has_option(section_name, "map" + "_l_" + str(resolution)):
-        my_data["map"] = get_image(section_name, im, "map", "name")
             
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
