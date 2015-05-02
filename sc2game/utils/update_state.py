@@ -18,7 +18,7 @@ import logging
 import pdb
 
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
                                                maxBytes=50 * 1024 * 1024,
                                                backupCount=5)
@@ -52,6 +52,7 @@ def threshold(im, section_name, pic):
 
 
 def get_image(section_name, im, pic, mode):
+    logger.debug("get_image for " + section_name + " image_area " + pic)
     resolution = im.size[1]
     l = int(parser.get(section_name, pic + '_l_' + str(resolution)))
     u = int(parser.get(section_name, pic + '_u_' + str(resolution)))
@@ -93,6 +94,7 @@ def get_screenshot(stream, section_name):
 def get_data_from_image(im, parser, section_name):
     my_data = {}
     resolution = im.size[1]
+    logger.debug("resolution: " + str(resolution) + " for section: " + section_name)
     texts = ['l_name', 'r_name']
     for name in texts:
         if parser.has_option(section_name, name + "_l_" + str(resolution)):
