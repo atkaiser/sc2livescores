@@ -93,6 +93,10 @@ def get_screenshot(stream, section_name):
 def get_data_from_image(im, parser, section_name):
     my_data = {}
     resolution = im.size[1]
+    
+    if parser.has_option(section, "same_as"):
+        section_name = parser.get(section, "same_as")
+    
     texts = ['l_name', 'r_name']
     for name in texts:
         if parser.has_option(section_name, name + "_l_" + str(resolution)):
