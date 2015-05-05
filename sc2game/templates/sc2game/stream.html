@@ -14,13 +14,13 @@
 
 {% if not game.game_on %}
     <div class="row">
-        <div class="small-8 text-center">
+        <div class="small-8-centered text-center">
             This was the last state of the game, there isn't one on now. </br>
             Last game was at: {{ game.game_off_time|timezone:"America/Los_Angeles" }} PDT
         </div>
     </div>
     <div class="row">
-        <div class="small-8 text-center spacer">
+        <div class="small-8-centered text-center spacer">
         </div>
     </div>
 {% endif %}
