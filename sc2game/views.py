@@ -32,7 +32,7 @@ def stream(request, stream_url):
     row_objs = []
     consistent_rows = ['name', 'score', 'supply', 'minerals', 'gas']
     consistent_row_names = ['Players',
-                            'Current Score',
+                            'Score',
                             'Supply',
                             'Minerals',
                             'Gas']

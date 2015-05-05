@@ -6,36 +6,41 @@
 {% block content %}
 <div class="row">
     <div class="small-12 text-center">
-        <h5>
+        <h3>
             {{ stream_obj.name }}
-        </h5>
+        </h3>
     </div>
 </div>
 
 {% if not game.game_on %}
     <div class="row">
-        <div class="small-12 text-center">
+        <div class="small-8 text-center">
             This was the last state of the game, there isn't one on now. </br>
             Last game was at: {{ game.game_off_time|timezone:"America/Los_Angeles" }} PDT
         </div>
     </div>
     <div class="row">
-        <div class="small-12 text-center spacer">
+        <div class="small-8 text-center spacer">
         </div>
     </div>
 {% endif %}
 
 {%for obj in row_objs %}
     <div class="row">
-        <div class="small-4 columns text-right">
+        <div class="small-4 columns text-right left-cell">
             {{ obj.player_1 }}
         </div>
         <div class="small-4 columns text-center">
             {{ obj.name }}
         </div>
-        <div class="small-4 columns text-left">
+        <div class="small-4 columns text-left right-cell">
             {{ obj.player_2 }}
         </div>
+    </div>
+    <div class="row">
+        <div class="small-2 columns spacer"></div>
+        <div class="small-8 columns spacer bottom-line"></div>
+        <div class="small-2 spacer columns"></div>
     </div>
     <div class="row">
         <div class="small-12 text-center spacer">
@@ -48,6 +53,11 @@
         Time: {{ game.current_time }}
     </div>
     <div class="row">
+        <div class="small-4 columns spacer"></div>
+        <div class="small-4 columns spacer bottom-line"></div>
+        <div class="small-4 spacer columns"></div>
+    </div>
+    <div class="row">
         <div class="small-12 text-center spacer">
         </div>
     </div>
@@ -56,6 +66,10 @@
 <div class="row">
     <div class="small-3 small-centered text-center columns">
         Map: {{ game.on_map }}
+    </div>
+    <div class="row">
+        <div class="small-12 text-center spacer">
+        </div>
     </div>
     <div class="row">
         <div class="small-12 text-center spacer">
