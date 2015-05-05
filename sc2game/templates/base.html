@@ -11,6 +11,7 @@
         <link href="/static/foundation/css/foundation.min.css" rel="stylesheet"/>
         <link rel="stylesheet" type="text/css" href="{% static 'sc2game/style.css' %}" />
         <script src="/static/foundation/js/vendor/modernizr.js"></script>
+        <script src="{% static 'sc2game/reload.js' %}"></script>
     </head>
     
     <body>
@@ -22,6 +23,7 @@
             </ul>
         </nav>  
         <div class="top-right-section">
+            <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto Reload </input>
             <a href="javascript:document.location.reload(true);">Reload</a>
         </div>
         <div id="content">
