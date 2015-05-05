@@ -9,8 +9,12 @@ ssh sc2ls@sc2ls.mooo.com /bin/bash << EOF
   ps aux | grep update_state.py | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
   cd /home/sc2ls/dev/sc2livescores
   git pull
+  mpy collectstatic --noinput
+  echo "Starting server ..."
   nohup uwsgi --ini sc2livescores_uwsgi.ini > logs/server.out 2> logs/server.err < /dev/null &
   cd sc2game/utils
+  echo "Starting update_state process ..."
   nohup python update_state.py > ../../logs/update.log 2> ../../logs/update.err < /dev/null &
 EOF
 
+echo "Done."
