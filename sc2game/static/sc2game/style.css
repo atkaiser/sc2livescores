@@ -1,0 +1,40 @@
+#content {
+    margin-top: 15px;
+}
+
+.top-margin {
+    margin-top: 5px;
+}
+
+.spacer {
+    height: 5px;
+}
+
+.bottom-line {
+  border-bottom:1px solid
+}
+
+.top-right-section {
+    position:absolute;
+    top:0px;
+    right:0px;
+    padding-right:15px;
+    padding-left:15px;
+    color: #fff;
+    line-height: 45px;
+    font-family: "Helvetica Neue","Helvetica",Helvetica,Arial,sans-serif;
+    font-size: 0.8125rem;
+}
+
+.left-cell{
+  border-right:1px solid
+}
+
+.right-cell {
+  border-left:1px solid
+}
+
+.center-cell {
+  border:1px solid
+}
+

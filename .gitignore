@@ -11,10 +11,10 @@ db.*
 tmp/
 
 # Static stuff
-static/
+/static/
 
 # Downloaded images
-sc2game/temps/
+/sc2game/temps/
 
 # Settings file
 sc2livescores/sets.py
