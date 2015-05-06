@@ -21,10 +21,15 @@
                     <h1><a href="/">SC2 Live Scores</a></h1>
                 </li>
             </ul>
+            <section class="top-bar-section">
+              <ul class="left">
+                  <li><a href="/about">About</a></li>
+              </ul>
+            </section>
         </nav>  
         <div class="top-right-section">
             <input type="checkbox" onclick="toggleAutoRefresh(this);" id="reloadCB"> Auto Reload </input>
-            <a href="javascript:document.location.reload(true);">Reload</a>
+            <a class="pad-left" href="javascript:document.location.reload(true);">Reload</a>
         </div>
         <div id="content">
             {% block content %}{% endblock %}

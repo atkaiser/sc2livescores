@@ -64,3 +64,7 @@ def stream(request, stream_url):
     }
 
     return render(request, 'sc2game/stream.html', context)
+
+def about(request):
+
+    return render(request, 'sc2game/about.html')
