@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <div class="row">
+    <div class="small-12 columns text-center">
+      <h3>
+        About
+      </h3>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="small-1 columns spacer"></div>
+    <div class="small-10 columns text-center">
+      As mentioned on the home page, this site aims to provide live scoring for SC2 games.
+      It does that by trying to read the state of the game from the stream.  Currently it does 
+      this by taking a screen shot every few seconds and reading all the availble information, 
+      such as names, score, supply, etc.  However, for 
+      streams that are below 1080p it can be extremely hard to read the information correctly, thus 
+      the low number of supported streams.  Still I will try to develop more configs for the big 
+      touraments.  If you have any questions or comments, please send them to sc2livescores@gmail.com
+    </div>
+    <div class="small-1 columns spacer"></div>
+  </div>
+  
+  <div class="spacer"></div>
+  <div class="spacer"></div>
+  <div class="spacer"></div>
+  
+  <div class="row">
+    <div class="small-12 columns text-center">
+      <h5>
+        Future Plans
+      </h5>
+    </div>
+  </div>
+  
+  <div class="spacer"></div>
+  <div class="spacer"></div>
+  <div class="spacer"></div>
+  
+  <div class="row">
+    <div class="small-3 columns spacer"></div>
+    <div class="small-6 columns">
+      <ul>
+        <li>Add more streams</li>
+        <li>Add player races</li>
+        <li>Try and read from production tab what tech has been built</li>
+      </ul>
+    </div>
+    <div class="small-3 columns spacer"></div>
+  </div>
+  
+{% endblock %}
