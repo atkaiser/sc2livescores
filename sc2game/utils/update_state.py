@@ -133,7 +133,7 @@ def get_stream(stream_url):
     stream = None
     try:
         plugin = livestreamer.resolve_url("http://www.twitch.tv/" + stream_url)
-        plugin.set_option('oauth_token', 'bi6nl0zlpl4dcakk8k2k79kolpvn69p')
+        plugin.set_option('oauth_token', 'xtlhyl6uapy6znsvuhy4zfk0jbt086')
         streams = plugin.get_streams()
         stream = streams['best']
     except Exception:
