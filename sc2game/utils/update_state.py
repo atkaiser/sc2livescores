@@ -15,6 +15,7 @@ import re
 from django.utils import timezone
 from sc2game.models import Game, Player, Stream, Bracket
 import logging
+import requests
 import pdb
 
 logger = logging.getLogger(__name__)
@@ -224,6 +225,15 @@ def get_info_from_stream(section_name):
                 time.sleep(60)
                 continue
             
+            res = requests.get("https://api.twitch.tv/kraken/channels/" + stream_url);
+            json_res = res.json()
+            if json_res["game"] != "StarCraft II":
+                logger.info("Current game is not SCII for stream: " + stream_url)
+                stream_obj.up = False
+                stream_obj.save()
+                time.sleep(60)
+                continue
+                        
             stream_obj.up = True
             stream_obj.save()
             
