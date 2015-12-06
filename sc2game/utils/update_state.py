@@ -160,9 +160,6 @@ def get_players(stream_obj):
 def game_live(im, data):
     num_valid_fields = 0
     
-    if 'l_name' not in data:
-        return False
-    
     for field in ['l_name', 'r_name']:
         if len(data[field]) >= 3:
             num_valid_fields += 3
@@ -246,6 +243,14 @@ def get_info_from_stream(section_name):
                 logger.debug(str(key) + ": " + str(my_data[key]))
 
             players = get_players(stream_obj)
+            
+                
+            if 'l_name' not in my_data:
+                logger.info("No correct conf for: " + stream_url)
+                stream_obj.up = False
+                stream_obj.save()
+                time.sleep(60)
+                continue
             
             if not game_live(im, my_data):
                 if game.game_on:
