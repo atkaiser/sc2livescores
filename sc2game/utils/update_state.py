@@ -159,6 +159,10 @@ def get_players(stream_obj):
 
 def game_live(im, data):
     num_valid_fields = 0
+    
+    if 'l_name' not in data:
+        return False
+    
     for field in ['l_name', 'r_name']:
         if len(data[field]) >= 3:
             num_valid_fields += 3
