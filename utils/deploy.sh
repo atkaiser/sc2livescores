@@ -5,8 +5,9 @@ git push origin master
 # ssh and setup environ
 ssh sc2ls@sc2ls.mooo.com /bin/bash << EOF
   source /home/sc2ls/.bash_profile
-  ps aux | grep uwsgi | grep -v grep | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
+  ps aux | grep uwsgi | grep sc2livescores | grep -v grep | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
   ps aux | grep update_state.py | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
+  workon sc2ls
   cd /home/sc2ls/dev/sc2livescores
   git pull
   python manage.py collectstatic --noinput
