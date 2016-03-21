@@ -16,6 +16,7 @@ from django.utils import timezone
 from sc2game.models import Game, Player, Stream, Bracket
 import logging
 import requests
+from shutil import copyfile
 import pdb
 
 logger = logging.getLogger(__name__)
@@ -193,6 +194,15 @@ def set_up_bracket(section_name, stream_obj):
             bracket[0].delete()
 
 
+def save_images(section_name):
+    for category in ["score", "name", "gas", "minerals", "supply"]:
+        for prefix in ["l_", "r_"]:
+            copyfile(image_temp_file + section_name + "/" + prefix + category + '.jpeg',
+                     "/home/sc2ls/pics/" + category)
+    copyfile(image_temp_file + section_name + "/time" + '.jpeg',
+                     "/home/sc2ls/pics/" + category)
+
+
 def get_info_from_stream(section_name):
     while True:
         try:
@@ -279,6 +289,7 @@ def get_info_from_stream(section_name):
             else:
                 game.game_on = True
             
+            save_images(section_name)
 
             p_l = players[0]
             p_r = players[1]
