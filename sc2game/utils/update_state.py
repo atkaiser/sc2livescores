@@ -325,6 +325,12 @@ def get_stream_info_thread():
 
 if __name__ == "__main__":
     logger.debug("Start of function")
+    logger.debug("Deleting old streams")
+    sections = parser.sections()
+    for stream in Stream.objects.all():
+        if stream.name not in sections:
+            stream.up = False
+            stream.save()
     for section in parser.sections():
         logger.debug("Starting thread for " + section)
         t = threading.Thread(name=section, target=get_stream_info_thread)
