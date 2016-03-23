@@ -200,11 +200,15 @@ def save_images(section_name):
     for category in ["score", "name", "gas", "minerals", "supply"]:
         for prefix in ["l_", "r_"]:
             name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+            path = "/home/sc2ls/pics/" + category
+            mkdir_p(path)
             copyfile(image_temp_file + section_name + "/" + prefix + category + '.jpeg',
-                     "/home/sc2ls/pics/" + category + "/" + name)
+                     path + "/" + name + ".jpeg")
     name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+    path = "/home/sc2ls/pics/time"
+    mkdir_p(path)
     copyfile(image_temp_file + section_name + "/time" + '.jpeg',
-                     "/home/sc2ls/pics/" + category + "/" + name)
+                     path + "/" + name + ".jpeg")
 
 
 def get_info_from_stream(section_name):
