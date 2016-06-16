@@ -212,6 +212,7 @@ def save_images(section_name):
 
 
 def get_info_from_stream(section_name):
+    tries = 0
     while True:
         try:
             # Reload parser vars
@@ -237,7 +238,12 @@ def get_info_from_stream(section_name):
             set_up_bracket(section_name, stream_obj)
 
             if not stream_data:
+                if stream_obj.up and tries <= 2:
+                    tries += 1
+                    time.sleep(5)
+                    continue
                 logger.info("There doesn't seem to be any stream available for: " + stream_url)
+                tries = 0
                 stream_obj.up = False
                 stream_obj.save()
                 time.sleep(60)
@@ -319,6 +325,7 @@ def get_info_from_stream(section_name):
             game.save()
     
             logger.info("Done with loop for: " + stream_url)
+            time.sleep(2)
         except KeyboardInterrupt:
             exit()
         except Exception as _:
