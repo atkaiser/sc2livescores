@@ -239,6 +239,8 @@ def get_info_from_stream(section_name):
 
             if not stream_data:
                 if stream_obj.up and tries <= 2:
+                    logger.debug("Failed getting up stream, stream_url: " + stream_url
+                                 + " tries: " + str(tries))
                     tries += 1
                     time.sleep(5)
                     continue
@@ -248,6 +250,8 @@ def get_info_from_stream(section_name):
                 stream_obj.save()
                 time.sleep(60)
                 continue
+            else:
+                tries = 0
             
             res = requests.get("https://api.twitch.tv/kraken/channels/" + stream_url);
             json_res = res.json()
