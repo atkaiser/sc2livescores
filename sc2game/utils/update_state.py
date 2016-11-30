@@ -307,7 +307,7 @@ def get_info_from_stream(section_name):
             else:
                 game.game_on = True
             
-            save_images(section_name)
+#             save_images(section_name)
 
             p_l = players[0]
             p_r = players[1]
