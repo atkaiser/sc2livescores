@@ -253,7 +253,9 @@ def get_info_from_stream(section_name):
             else:
                 tries = 0
             
-            res = requests.get("https://api.twitch.tv/kraken/channels/" + stream_url);
+            headers = {'Client-ID': 'jy4zwuphqfdvh2nfygxkzb66z23wjz',
+                       'Accept': 'application/vnd.twitchtv.v3+json'}
+            res = requests.get("https://api.twitch.tv/kraken/channels/" + stream_url, headers=headers);
             json_res = res.json()
             if json_res["game"] != "StarCraft II":
                 logger.info("Current game is not SCII for stream: " + stream_url)
