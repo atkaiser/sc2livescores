@@ -216,8 +216,10 @@ def save_images(section_name):
 def get_info_from_stream(section_name):
     tries = 0
     while True:
-        gc.collect()
-        objgraph.show_most_common_types()
+        if section_name == "iem":
+            gc.collect()
+            print("NEW GRAPH")
+            objgraph.show_most_common_types()
         try:
             # Reload parser vars
             #parser = ConfigParser.ConfigParser()
