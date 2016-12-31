@@ -216,6 +216,7 @@ def save_images(section_name):
 def get_info_from_stream(section_name):
     tries = 0
     while True:
+        print("Starting loop")
         if section_name == "iem":
             gc.collect()
             print("NEW GRAPH")
