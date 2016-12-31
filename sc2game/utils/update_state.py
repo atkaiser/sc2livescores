@@ -19,6 +19,8 @@ import requests
 import string
 import random
 from shutil import copyfile
+import objgraph
+import gc
 import pdb
 
 logger = logging.getLogger(__name__)
@@ -214,6 +216,8 @@ def save_images(section_name):
 def get_info_from_stream(section_name):
     tries = 0
     while True:
+        gc.collect()
+        objgraph.show_most_common_types()
         try:
             # Reload parser vars
             #parser = ConfigParser.ConfigParser()
