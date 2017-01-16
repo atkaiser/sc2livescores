@@ -44,9 +44,9 @@ git config --global user.name "Alex Kaiser"
 
 # install pip
 sudo apt-get install python-pip
-sudo apt-get install python-dev
+sudo apt-get install -y python-dev
 sudo apt-get upgrade gcc
-sudo apt-get install nodejs npm libav-tools libjpeg-dev yasm tessercat-ocr
+sudo apt-get install -y nodejs npm libav-tools libjpeg-dev yasm tesseract-ocr
 
 # Fix nodejs bug
 sudo ln -s /usr/bin/nodejs /usr/bin/node
@@ -68,9 +68,13 @@ source setup_proj.sh
 
 mkvirtualenv <django_project>
 
-# Setup tesseract configs in utils/sets.py
+# Setup tesseract configs
+copy from sc2livescores/sc2game/utils/tess_configs to /usr/share/tesseract-ocr/tessdata/configs
 
-pip install -r requirements.txt
+pip install -r utils/requirements.txt
+
+# Set up settings:
+cp sc2livescores/sets.py.tmp sc2livescores/sets.py
 
 # Setup bower
 mpy bower install
@@ -78,3 +82,4 @@ mpy bower install
 mpy syncdb
 # colllect static files
 mpy collectstatic
+
