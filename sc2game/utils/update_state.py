@@ -216,10 +216,11 @@ def save_images(section_name):
 def get_info_from_stream(section_name):
     tries = 0
     while True:
-        if section_name == "iem":
-            gc.collect()
-            print("NEW GRAPH - " + time.strftime("%c"))
-            objgraph.show_most_common_types()
+        # While setting up, dissable memory logging
+#         if section_name == "iem":
+#             gc.collect()
+#             print("NEW GRAPH - " + time.strftime("%c"))
+#             objgraph.show_most_common_types()
         try:
             # Reload parser vars
             #parser = ConfigParser.ConfigParser()
