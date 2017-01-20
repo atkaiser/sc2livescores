@@ -270,7 +270,7 @@ def get_info_from_stream(section_name):
                 stream_obj.save()
                 time.sleep(60)
                 continue
-            if "rerun" in json_res["status"].lower():
+            if any(x in json_res["status"].lower() for x in ["rerun", "rebroadcast"]):
                 logger.info("Showing rerun in stream: " + stream_url)
                 stream_obj.up = False
                 stream_obj.save()
