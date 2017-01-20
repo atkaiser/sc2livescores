@@ -4,7 +4,7 @@ git push origin master
 
 # ssh and setup environ
 ssh akaiser@akaiser0.mooo.com /bin/bash << EOF
-  source /home/akaiser/.bash_profile
+  source /home/akaiser/.bashrc
   ps aux | grep uwsgi | grep sc2livescores | grep -v grep | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
   ps aux | grep update_state.py | sed 's/\s\+/ /g' | cut -d' ' -f2 | xargs kill -9
   workon sc2ls
