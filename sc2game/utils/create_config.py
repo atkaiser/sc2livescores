@@ -1,19 +1,43 @@
-import numpy as np
 import cv2
 import sys
+from PIL import Image
 
-if len(sys.argv) != 3:
-    print "Use create_config.py <image to test on> <resolution>"
+if len(sys.argv) != 2:
+    print "Use create_config.py <image to test on>"
     sys.exit()
 
 im_path = sys.argv[1]
-res = sys.argv[2]
+# res = sys.argv[2]
+
+im = Image.open(im_path)
+res = str(im.size[1])
+
+configs = ["l_name",
+           "r_name",
+           "l_score",
+           "r_score",
+           "l_supply",
+           "r_supply",
+           "l_minerals",
+           "r_minerals",
+           "l_gas",
+           "r_gas",
+           "l_army",
+           "r_army",
+           "l_workers",
+           "r_workers",
+           "map",
+           "time"]
 
 boxes = []
-box_name = raw_input()
+index = 0
+box_name = configs[index]
+print box_name
 
 def on_mouse(event, x, y, flags, params):
     global box_name
+    global index
+    global configs
     if event == cv2.EVENT_LBUTTONDOWN:
         print box_name + "_l_" + res + "=" + str(x)
         print box_name + "_u_" + res + "=" + str(y)
@@ -21,7 +45,11 @@ def on_mouse(event, x, y, flags, params):
         print box_name + "_r_" + res + "=" + str(x)
         print box_name + "_d_" + res + "=" + str(y)
         print ""
-        box_name = raw_input()
+        index += 1
+        if index >= len(configs):
+            sys.exit(0)
+        box_name = configs[index]
+        print box_name
 
 
 count = 0
