@@ -1,13 +1,10 @@
 import tempfile
 import os
-from livestreamer import Livestreamer
-from subprocess import call
 import sys
+from subprocess import call
 from PIL import Image
 import update_state
-import sys
-import ConfigParser
-from sc2livescores import sets
+
 
 def mkdir_p(path):
     try:

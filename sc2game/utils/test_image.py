@@ -15,7 +15,7 @@ if len(sys.argv) == 3:
 else:
     parser = ConfigParser.ConfigParser()
     parser.read(sets.conf_file)
-    stream_url = stream_url = parser.get(section_name, 'stream_url')
+    stream_url = parser.get(section_name, 'stream_url')
     stream = update_state.get_stream(stream_url)
     im = update_state.get_screenshot(stream, section_name)
 
