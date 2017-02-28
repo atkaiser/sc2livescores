@@ -141,7 +141,11 @@ def get_stream(stream_url):
         plugin = livestreamer.resolve_url("http://www.twitch.tv/" + stream_url)
         plugin.set_option('oauth_token', 'xtlhyl6uapy6znsvuhy4zfk0jbt086')
         streams = plugin.get_streams()
-        stream = streams['best']
+        # Temporary fix for esl_sc2
+        if 'best' in streams:
+            stream = streams['best']
+        else:
+            stream = streams['720p60']
     except Exception:
         pass
     return stream
