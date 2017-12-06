@@ -1,27 +1,31 @@
-import sys
+import ConfigParser
+import errno
+import gc
+import logging
 import os
+import pdb
+import random
+import re
+from shutil import copyfile
+import string
+import subprocess
+import sys
+import threading
+import time
+
+from PIL import Image
+import PIL
+from django.utils import timezone
+from livestreamer import Livestreamer
+import objgraph
+import requests
+
 sys.path.append(os.environ['SC2LS_PATH'])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
+from sc2game.models import Game, Player, Stream, Bracket
 from sc2livescores import sets
 from sc2livescores import settings
-from PIL import Image
-import time
-import ConfigParser
-import subprocess
-import errno
-from livestreamer import Livestreamer
-import threading
-import re
-from django.utils import timezone
-from sc2game.models import Game, Player, Stream, Bracket
-import logging
-import requests
-import string
-import random
-from shutil import copyfile
-import objgraph
-import gc
-import pdb
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -29,7 +33,8 @@ handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'u
                                                maxBytes=50 * 1024 * 1024,
                                                backupCount=5)
 handler.setLevel(logging.DEBUG)
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
@@ -40,13 +45,15 @@ image_temp_file = "../temps/"
 parser = ConfigParser.ConfigParser()
 parser.read(sets.conf_file)
 
+
 def mkdir_p(path):
     try:
         os.makedirs(path)
-    except OSError as exc: # Python >2.5
+    except OSError as exc:  # Python >2.5
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
-        else: raise
+        else:
+            raise
 
 
 def threshold(im, section_name, pic):
@@ -66,6 +73,10 @@ def get_image(section_name, im, pic, mode):
     d = int(parser.get(section_name, pic + '_d_' + str(resolution)))
     temp = im.crop((l, u, r, d))
     temp = threshold(temp, section_name, pic)
+    width, height = temp.size
+    scale = 5
+    temp = temp.resize((width * scale, height * scale),
+                       resample=PIL.Image.BICUBIC)
     mkdir_p(image_temp_file + section_name)
     temp.save(image_temp_file + section_name + "/" + pic + '.jpeg')
     command = [sets.tesseract,
@@ -93,28 +104,30 @@ def get_screenshot(stream, section_name):
     logger.debug("Call to FFMPEG: " + str(command))
     subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
 
-    im = Image.open(image_temp_file + section_name + '/' + section_name + '-1.jpeg')
+    im = Image.open(image_temp_file + section_name +
+                    '/' + section_name + '-1.jpeg')
     return im
 
 
 def get_data_from_image(im, parser, section_name):
     my_data = {}
     resolution = im.size[1]
-    logger.debug("resolution: " + str(resolution) + " for section: " + section_name)
-    
+    logger.debug("resolution: " + str(resolution) +
+                 " for section: " + section_name)
+
     if parser.has_option(section_name, "same_as"):
         section_name = parser.get(section_name, "same_as")
-    
+
     texts = ['l_name', 'r_name']
     for name in texts:
         if parser.has_option(section_name, name + "_l_" + str(resolution)):
             my_data[name] = get_image(section_name, im, name, "name")
-            
+
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
         if parser.has_option(section_name, supply + "_l_" + str(resolution)):
             my_data[supply] = get_image(section_name, im, supply, "supply")
-            
+
     if parser.has_option(section_name, "time_l_" + str(resolution)):
         my_data['time'] = get_image(section_name, im, "time", "time")
 
@@ -141,8 +154,11 @@ def get_stream(stream_url):
         plugin = livestreamer.resolve_url("http://www.twitch.tv/" + stream_url)
         plugin.set_option('oauth_token', 'xtlhyl6uapy6znsvuhy4zfk0jbt086')
         streams = plugin.get_streams()
-        # Temporary fix for esl_sc2
-        if 'best' in streams:
+        # It seems best isn't necessarily the best, so we should search for
+        # 1080p first
+        if '1080p60' in streams:
+            stream = streams['1080p60']
+        elif 'best' in streams:
             stream = streams['best']
         else:
             stream = streams['720p60']
@@ -169,15 +185,15 @@ def get_players(stream_obj):
 
 def game_live(im, data):
     num_valid_fields = 0
-    
+
     for field in ['l_name', 'r_name']:
         if len(data[field]) >= 3:
             num_valid_fields += 3
-    
+
     for field in ['l_supply', 'r_supply']:
-        if re.search(r'\d+/\d+',data[field]):
+        if re.search(r'\d+/\d+', data[field]):
             num_valid_fields += 1
-            
+
     for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas', 'l_score', 'r_score']:
         if data[field] >= 0:
             num_valid_fields += 1
@@ -205,37 +221,40 @@ def set_up_bracket(section_name, stream_obj):
 def save_images(section_name):
     for category in ["score", "name", "gas", "minerals", "supply"]:
         for prefix in ["l_", "r_"]:
-            name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+            name = ''.join(random.choice(
+                string.ascii_lowercase + string.digits) for _ in range(10))
             path = "/home/sc2ls/pics/" + section_name + "/" + category
             mkdir_p(path)
             copyfile(image_temp_file + section_name + "/" + prefix + category + '.jpeg',
                      path + "/" + name + ".jpeg")
-    name = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(10))
+    name = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                   for _ in range(10))
     path = "/home/sc2ls/pics/" + section_name + "/time"
     mkdir_p(path)
     copyfile(image_temp_file + section_name + "/time" + '.jpeg',
-                     path + "/" + name + ".jpeg")
+             path + "/" + name + ".jpeg")
 
 
 def get_info_from_stream(section_name):
     tries = 0
     while True:
         # While setting up, dissable memory logging
-#         if section_name == "iem":
-#             gc.collect()
-#             print("NEW GRAPH - " + time.strftime("%c"))
-#             objgraph.show_most_common_types()
+        #         if section_name == "iem":
+        #             gc.collect()
+        #             print("NEW GRAPH - " + time.strftime("%c"))
+        #             objgraph.show_most_common_types()
         try:
             # Reload parser vars
             #parser = ConfigParser.ConfigParser()
-            #parser.read(sets.conf_file)
-            
+            # parser.read(sets.conf_file)
+
             #logger.debug("Done reading conf for: " + section_name)
-            
+
             stream_url = parser.get(section_name, 'stream_url')
             stream_obj = Stream.objects.filter(url=stream_url)
             if not stream_obj:
-                stream_obj = Stream(url=stream_url, name=parser.get(section_name, 'stream_name'))
+                stream_obj = Stream(url=stream_url, name=parser.get(
+                    section_name, 'stream_name'))
                 stream_obj.save()
             else:
                 stream_obj = stream_obj[0]
@@ -255,7 +274,8 @@ def get_info_from_stream(section_name):
                     tries += 1
                     time.sleep(5)
                     continue
-                logger.info("There doesn't seem to be any stream available for: " + stream_url)
+                logger.info(
+                    "There doesn't seem to be any stream available for: " + stream_url)
                 tries = 0
                 stream_obj.up = False
                 stream_obj.save()
@@ -263,13 +283,15 @@ def get_info_from_stream(section_name):
                 continue
             else:
                 tries = 0
-            
+
             headers = {'Client-ID': 'jy4zwuphqfdvh2nfygxkzb66z23wjz',
                        'Accept': 'application/vnd.twitchtv.v3+json'}
-            res = requests.get("https://api.twitch.tv/kraken/channels/" + stream_url, headers=headers);
+            res = requests.get(
+                "https://api.twitch.tv/kraken/channels/" + stream_url, headers=headers)
             json_res = res.json()
             if json_res["game"] != "StarCraft II":
-                logger.info("Current game is not SCII for stream: " + stream_url)
+                logger.info(
+                    "Current game is not SCII for stream: " + stream_url)
                 stream_obj.up = False
                 stream_obj.save()
                 time.sleep(60)
@@ -280,10 +302,10 @@ def get_info_from_stream(section_name):
                 stream_obj.save()
                 time.sleep(60)
                 continue
-                        
+
             stream_obj.up = True
             stream_obj.save()
-            
+
             # Get game objects
             game_objects = Game.objects.filter(stream=stream_obj)
             if not game_objects:
@@ -295,20 +317,19 @@ def get_info_from_stream(section_name):
             im = get_screenshot(stream_data, section_name)
 
             my_data = get_data_from_image(im, parser, section_name)
-            
+
             for key in my_data.keys():
                 logger.debug(str(key) + ": " + str(my_data[key]))
 
             players = get_players(stream_obj)
-            
-                
+
             if 'l_name' not in my_data:
                 logger.info("No correct conf for: " + stream_url)
                 stream_obj.up = False
                 stream_obj.save()
                 time.sleep(60)
                 continue
-            
+
             if not game_live(im, my_data):
                 if game.game_on:
                     game.game_off_time = timezone.now()
@@ -319,20 +340,21 @@ def get_info_from_stream(section_name):
                 continue
             else:
                 game.game_on = True
-            
+
 #             save_images(section_name)
 
             p_l = players[0]
             p_r = players[1]
 
-            categories = ['name', 'score', 'supply', 'minerals', 'gas', 'workers', 'army']
+            categories = ['name', 'score', 'supply',
+                          'minerals', 'gas', 'workers', 'army']
             for category in categories:
                 if 'l_' + category in my_data:
                     setattr(p_l, category, my_data['l_' + category])
                     setattr(p_r, category, my_data['r_' + category])
             p_l.save()
             p_r.save()
-            
+
             # Game stuff
             if 'time' in my_data:
                 game.current_time = my_data['time']
@@ -340,13 +362,14 @@ def get_info_from_stream(section_name):
                 game.on_map = my_data['map']
 
             game.save()
-    
+
             logger.info("Done with loop for: " + stream_url)
             time.sleep(2)
         except KeyboardInterrupt:
             exit()
         except Exception as _:
-            logger.error("Something went wrong for stream: " + stream_url, exc_info=True)
+            logger.error("Something went wrong for stream: " +
+                         stream_url, exc_info=True)
 
 
 def get_stream_info_thread():
@@ -367,4 +390,3 @@ if __name__ == "__main__":
         logger.debug("Starting thread for " + section)
         t = threading.Thread(name=section, target=get_stream_info_thread)
         t.start()
-
