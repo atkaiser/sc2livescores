@@ -1,7 +1,8 @@
-import tempfile
 import os
-import sys
 from subprocess import call
+import sys
+import tempfile
+
 from PIL import Image
 import update_state
 
@@ -11,6 +12,7 @@ def mkdir_p(path):
         os.makedirs(path)
     except OSError:
         pass
+
 
 if len(sys.argv) != 2:
     print "Use get_image_from_stream.py <stream_name>"
@@ -31,14 +33,14 @@ stream = update_state.get_stream(stream_name)
 fd = stream.open()
 data = ''
 data += fd.read(3000000)
-fd.close() 
+fd.close()
 fname = temp_dir + '/vid.mp4'
 open(fname, 'wb').write(data)
-command = [ FFMPEG_BIN,
-        '-i', fname,
-        '-r', '1',
-        '-t', '1',
-        temp_dir + '/image-%d.jpeg']
+command = [FFMPEG_BIN,
+           '-i', fname,
+           '-r', '1',
+           '-t', '1',
+           temp_dir + '/image-%d.jpeg']
 call(command)
 new_image_name = saved_images + '/' + stream_name + '.jpeg'
 os.rename(temp_dir + '/image-1.jpeg', new_image_name)
@@ -50,7 +52,8 @@ resolution = im.size[1]
 # Test against current configs
 for section_name in update_state.parser.sections():
     print "Trying section: " + section_name
-    my_data = update_state.get_data_from_image(im, update_state.parser, section_name)
+    my_data = update_state.get_data_from_image(
+        im, update_state.parser, section_name)
     if "l_name" in my_data:
         if update_state.game_live(im, my_data):
             print "Live game for: " + section_name
@@ -58,4 +61,5 @@ for section_name in update_state.parser.sections():
 
 print("")
 print("Image from stream is at: " + new_image_name)
-print("To create config run: python create_config.py " + new_image_name + " " + str(resolution))
+print("To create config run: python create_config.py " +
+      new_image_name + " " + str(resolution))

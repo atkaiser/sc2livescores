@@ -4,6 +4,13 @@ import mahotas.features
 import milk
 from jug import TaskGenerator
 
+"""
+Notes: April 7th, 2017
+I've never actually used this script and I don't know if it even works
+I also haven't installed the libraries before.  From what I remember it is 
+supposed to do something about classifying images
+"""
+
 @TaskGenerator
 def features_for(imname):
     img = mahotas.imread(imname)

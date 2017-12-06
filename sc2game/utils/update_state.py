@@ -15,15 +15,18 @@ import threading
 import time
 
 from PIL import Image
+import PIL
 from django.utils import timezone
 from livestreamer import Livestreamer
 import objgraph
 import requests
+
 sys.path.append(os.environ['SC2LS_PATH'])
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "sc2livescores.settings")
 from sc2game.models import Game, Player, Stream, Bracket
 from sc2livescores import sets
 from sc2livescores import settings
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -71,6 +74,10 @@ def get_image(section_name, im, pic, mode):
     d = int(parser.get(section_name, pic + '_d_' + str(resolution)))
     temp = im.crop((l, u, r, d))
     temp = threshold(temp, section_name, pic)
+    width, height = temp.size
+    scale = 5
+    temp = temp.resize((width * scale, height * scale),
+                       resample=PIL.Image.BICUBIC)
     mkdir_p(image_temp_file + section_name)
     temp.save(image_temp_file + section_name + "/" + pic + '.jpeg')
     command = [sets.tesseract,
@@ -148,8 +155,11 @@ def get_stream(stream_url):
         plugin = livestreamer.resolve_url("http://www.twitch.tv/" + stream_url)
         plugin.set_option('oauth_token', 'xtlhyl6uapy6znsvuhy4zfk0jbt086')
         streams = plugin.get_streams()
-        # Temporary fix for esl_sc2
-        if 'best' in streams:
+        # It seems best isn't necessarily the best, so we should search for
+        # 1080p first
+        if '1080p60' in streams:
+            stream = streams['1080p60']
+        elif 'best' in streams:
             stream = streams['best']
         else:
             stream = streams['720p60']
