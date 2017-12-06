@@ -1,0 +1,12 @@
+[Unit]
+Description=Update state script for sc2ls web service
+After=network.target sc2ls_web.service
+
+[Service]
+User=akaiser
+Environment=SC2LS_PATH=/home/akaiser/dev/sc2livescores
+ExecStart=/bin/bash -c 'cd /home/akaiser/dev/sc2livescores; source ~/.virtualenvs/sc2ls/bin/activate; cd sc2game/utils; python -u update_state.py'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
