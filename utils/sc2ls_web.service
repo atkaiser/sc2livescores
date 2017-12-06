@@ -1,0 +1,11 @@
+[Unit]
+Description=Sc2ls web service
+After=network.target
+
+[Service]
+User=akaiser
+ExecStart=/bin/bash -c 'cd /home/akaiser/dev/sc2livescores; source ~/.virtualenvs/sc2ls/bin/activate; uwsgi --ini sc2livescores_uwsgi.ini'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
