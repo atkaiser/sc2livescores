@@ -155,14 +155,14 @@ def get_stream(stream_url):
         plugin = livestreamer.resolve_url("http://www.twitch.tv/" + stream_url)
         plugin.set_option('oauth_token', 'xtlhyl6uapy6znsvuhy4zfk0jbt086')
         streams = plugin.get_streams()
-        # It seems best isn't necessarily the best, so we should search for
-        # 1080p first
+        # It seems best isn't necessarily the best, twitch doesn't seem to consider 60
+        # streams, so we should search for those first.
         if '1080p60' in streams:
             stream = streams['1080p60']
-        elif 'best' in streams:
-            stream = streams['best']
-        else:
+        elif '720p60' in streams:
             stream = streams['720p60']
+        else:
+            stream = streams['best']
     except Exception:
         pass
     return stream
