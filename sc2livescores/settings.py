@@ -20,9 +20,9 @@ PROJECT_ROOT = BASE_DIR
 SECRET_KEY = '4@5(uv7q9v@g56%3d2^12@2s+*$3)_*3*7g9jjh&7-t4okm#*l'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -93,9 +93,10 @@ STATICFILES_FINDERS = (
 
 BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, "../components/")
 COMPRESS_PRECOMPILERS = (
-        ('text/x-sass', 'sass --compass "{infile}" "{outfile}"'),
-        ('text/x-scss', 'sass --scss --compass -I "%s/bower_components/foundation/scss" "{infile}" "{outfile}"' % BOWER_COMPONENTS_ROOT),
-    )
+    ('text/x-sass', 'sass --compass "{infile}" "{outfile}"'),
+    ('text/x-scss',
+     'sass --scss --compass -I "%s/bower_components/foundation/scss" "{infile}" "{outfile}"' % BOWER_COMPONENTS_ROOT),
+)
 
 BOWER_INSTALLED_APPS = (
     'foundation',
