@@ -57,6 +57,8 @@ for section_name in update_state.parser.sections():
     if "l_name" in my_data:
         if update_state.game_live(im, my_data):
             print "Live game for: " + section_name
+            for key in my_data.keys():
+                print str(key) + ": " + str(my_data[key])
 
 
 print("")
