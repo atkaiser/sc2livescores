@@ -196,24 +196,40 @@ def get_players(stream_obj):
 
 
 def game_live(data):
-    num_valid_fields = 0
-
-    for field in ['l_name', 'r_name']:
-        if len(data[field]) >= 3:
-            num_valid_fields += 3
-
-    for field in ['l_supply', 'r_supply']:
-        if re.search(r'\d+/\d+', data[field]):
-            num_valid_fields += 3
-
-    for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas', 'l_score', 'r_score']:
-        if data[field] >= 0:
-            num_valid_fields += 1
-    # Max value of 24
-    if num_valid_fields >= 18:
+    if get_score(data) >= 85:
         return True
     else:
         return False
+
+
+def get_score(data):
+    """
+    Return a score out of 100 (float). 100 is we are are sure the 
+    data is from a live game 0 is definitely not a live game
+    """
+    score = 0
+    total_possible_points = 0
+    num_valid_fields = 0
+
+    for field in ['l_name', 'r_name']:
+        worth = 3
+        total_possible_points += worth
+        if len(data[field]) >= 3:
+            score += worth
+
+    for field in ['l_supply', 'r_supply']:
+        worth = 4
+        total_possible_points += worth
+        if re.search(r'\d+/\d+', data[field]):
+            score += worth
+
+    for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas', 'l_score', 'r_score']:
+        worth = 1
+        total_possible_points += worth
+        if data[field] >= 0:
+            num_valid_fields += worth
+
+    return ((score * 1.0) / (total_possible_points * 1.0)) * 100.0
 
 
 def set_up_bracket(section_name, stream_obj):
