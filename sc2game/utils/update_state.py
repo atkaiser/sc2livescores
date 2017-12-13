@@ -27,24 +27,38 @@ from sc2game.models import Game, Player, Stream, Bracket
 from sc2livescores import sets
 from sc2livescores import settings
 
+PRINT_MEMORY_INFO = False
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
-                                               maxBytes=50 * 1024 * 1024,
-                                               backupCount=5)
-handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter(
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+file_handler = logging.handlers.RotatingFileHandler(os.path.join(settings.LOG_DIR, 'update_state.log'),
+                                                    maxBytes=50 * 1024 * 1024,
+                                                    backupCount=5)
+file_handler.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setFormatter(formatter)
+# When running on a server we want to log to a file, so use this line
+logger.addHandler(file_handler)
+# When developing we want to log to the console so we should use this line
+# logger.addHandler(console_handler)
 
 
 FNULL = open(os.devnull, 'w')
 image_temp_file = "../temps/"
 
-parser = ConfigParser.ConfigParser()
-parser.read(sets.conf_file)
+display_type_confs = ConfigParser.ConfigParser()
+display_type_conf_files = []
+for file_name in os.listdir(sets.display_type_confs_dir):
+    if file_name.endswith(".conf"):
+        display_type_conf_files.append(os.path.join(
+            sets.display_type_confs_dir, file_name))
+display_type_confs.read(display_type_conf_files)
+
+stream_confs = ConfigParser.ConfigParser()
+stream_confs.read(sets.stream_conf_file)
 
 
 def mkdir_p(path):
@@ -57,36 +71,36 @@ def mkdir_p(path):
             raise
 
 
-def threshold(im, section_name, pic):
-    if parser.has_option(section_name, pic + '_thresh'):
+def threshold(im, display_type, pic):
+    if display_type_confs.has_option(display_type, pic + '_thresh'):
         im_grey = im.convert('L')
-        return im_grey.point(lambda x: 256 if x > int(parser.get(section_name, pic + '_thresh')) else 0)
+        return im_grey.point(lambda x: 256 if x > int(display_type_confs.get(display_type, pic + '_thresh')) else 0)
     else:
         return im
 
 
-def get_image(section_name, im, pic, mode):
-    logger.debug("get_image for " + section_name + " image_area " + pic)
+def get_image(display_type, im, pic, mode):
+    logger.debug("get_image for " + display_type + " image_area " + pic)
     resolution = im.size[1]
-    l = int(parser.get(section_name, pic + '_l_' + str(resolution)))
-    u = int(parser.get(section_name, pic + '_u_' + str(resolution)))
-    r = int(parser.get(section_name, pic + '_r_' + str(resolution)))
-    d = int(parser.get(section_name, pic + '_d_' + str(resolution)))
+    l = int(display_type_confs.get(display_type, pic + '_l_' + str(resolution)))
+    u = int(display_type_confs.get(display_type, pic + '_u_' + str(resolution)))
+    r = int(display_type_confs.get(display_type, pic + '_r_' + str(resolution)))
+    d = int(display_type_confs.get(display_type, pic + '_d_' + str(resolution)))
     temp = im.crop((l, u, r, d))
-    temp = threshold(temp, section_name, pic)
+    temp = threshold(temp, display_type, pic)
     width, height = temp.size
     scale = 5
     temp = temp.resize((width * scale, height * scale),
                        resample=PIL.Image.BICUBIC)
-    mkdir_p(image_temp_file + section_name)
-    temp.save(image_temp_file + section_name + "/" + pic + '.jpeg')
+    mkdir_p(image_temp_file + display_type)
+    temp.save(image_temp_file + display_type + "/" + pic + '.jpeg')
     command = [sets.tesseract,
-               image_temp_file + section_name + "/" + pic + '.jpeg',
-               image_temp_file + section_name + "/" + pic,
+               image_temp_file + display_type + "/" + pic + '.jpeg',
+               image_temp_file + display_type + "/" + pic,
                '-psm', '8']
     command.append(mode)
     subprocess.call(command, stdout=FNULL, stderr=subprocess.STDOUT)
-    return open(image_temp_file + section_name + "/" + pic + '.txt').read().strip()
+    return open(image_temp_file + display_type + "/" + pic + '.txt').read().strip()
 
 
 def get_screenshot(stream, section_name):
@@ -110,33 +124,30 @@ def get_screenshot(stream, section_name):
     return im
 
 
-def get_data_from_image(im, parser, section_name):
+def get_data_from_image(im, display_type):
     my_data = {}
     resolution = im.size[1]
     logger.debug("resolution: " + str(resolution) +
-                 " for section: " + section_name)
-
-    if parser.has_option(section_name, "same_as"):
-        section_name = parser.get(section_name, "same_as")
+                 " for section: " + display_type)
 
     texts = ['l_name', 'r_name']
     for name in texts:
-        if parser.has_option(section_name, name + "_l_" + str(resolution)):
-            my_data[name] = get_image(section_name, im, name, "name")
+        if display_type_confs.has_option(display_type, name + "_l_" + str(resolution)):
+            my_data[name] = get_image(display_type, im, name, "name")
 
     supplies = ['l_supply', 'r_supply']
     for supply in supplies:
-        if parser.has_option(section_name, supply + "_l_" + str(resolution)):
-            my_data[supply] = get_image(section_name, im, supply, "supply")
+        if display_type_confs.has_option(display_type, supply + "_l_" + str(resolution)):
+            my_data[supply] = get_image(display_type, im, supply, "supply")
 
-    if parser.has_option(section_name, "time_l_" + str(resolution)):
-        my_data['time'] = get_image(section_name, im, "time", "time")
+    if display_type_confs.has_option(display_type, "time_l_" + str(resolution)):
+        my_data['time'] = get_image(display_type, im, "time", "time")
 
     numbers = ['l_score', 'r_score', 'l_minerals', 'r_minerals', 'l_gas', 'r_gas',
                'l_workers', 'r_workers', 'l_army', 'r_army']
     for digits_only in numbers:
-        if parser.has_option(section_name, digits_only + "_l_" + str(resolution)):
-            data = get_image(section_name, im, digits_only, "digits_only")
+        if display_type_confs.has_option(display_type, digits_only + "_l_" + str(resolution)):
+            data = get_image(display_type, im, digits_only, "digits_only")
             try:
                 my_data[digits_only] = int(data)
             except:
@@ -184,7 +195,7 @@ def get_players(stream_obj):
     return players
 
 
-def game_live(im, data):
+def game_live(data):
     num_valid_fields = 0
 
     for field in ['l_name', 'r_name']:
@@ -193,21 +204,26 @@ def game_live(im, data):
 
     for field in ['l_supply', 'r_supply']:
         if re.search(r'\d+/\d+', data[field]):
-            num_valid_fields += 1
+            num_valid_fields += 3
 
     for field in ['l_minerals', 'r_minerals', 'l_gas', 'r_gas', 'l_score', 'r_score']:
         if data[field] >= 0:
             num_valid_fields += 1
-    if num_valid_fields >= 12:
+    # Max value of 24
+    if num_valid_fields >= 18:
         return True
     else:
         return False
 
 
 def set_up_bracket(section_name, stream_obj):
+    """
+    Set up a bracket object for a stream, or delete it if there is no longer a link
+    TODO: I shouldn't depend on there only being one bracket object for a stream
+    """
     bracket = Bracket.objects.filter(stream=stream_obj)
-    if parser.has_option(section_name, 'bracket_link'):
-        link = parser.get(section_name, 'bracket_link')
+    if stream_confs.has_option(section_name, 'bracket_link'):
+        link = stream_confs.get(section_name, 'bracket_link')
         if not bracket:
             bracket = Bracket(url=link, stream=stream_obj)
             bracket.save()
@@ -239,23 +255,19 @@ def save_images(section_name):
 def get_info_from_stream(section_name):
     tries = 0
     while True:
-        if section_name == "iem":
-            gc.collect()
-            logger.debug("NEW GRAPH - " + time.strftime("%c"))
-            graphOutput = StringIO()
-            objgraph.show_most_common_types(file=graphOutput)
-            logger.debug(graphOutput.getvalue())
+        if PRINT_MEMORY_INFO:
+            if section_name == "iem":
+                gc.collect()
+                logger.debug("NEW GRAPH - " + time.strftime("%c"))
+                graphOutput = StringIO()
+                objgraph.show_most_common_types(file=graphOutput)
+                logger.debug(graphOutput.getvalue())
         try:
-            # Reload parser vars
-            #parser = ConfigParser.ConfigParser()
-            # parser.read(sets.conf_file)
 
-            #logger.debug("Done reading conf for: " + section_name)
-
-            stream_url = parser.get(section_name, 'stream_url')
+            stream_url = stream_confs.get(section_name, 'stream_url')
             stream_obj = Stream.objects.filter(url=stream_url)
             if not stream_obj:
-                stream_obj = Stream(url=stream_url, name=parser.get(
+                stream_obj = Stream(url=stream_url, name=stream_confs.get(
                     section_name, 'stream_name'))
                 stream_obj.save()
             else:
@@ -305,6 +317,9 @@ def get_info_from_stream(section_name):
                 time.sleep(60)
                 continue
 
+            # At this point we know we have a stream that is up and we need to
+            # parse it
+
             stream_obj.up = True
             stream_obj.save()
 
@@ -318,12 +333,12 @@ def get_info_from_stream(section_name):
 
             im = get_screenshot(stream_data, section_name)
 
-            my_data = get_data_from_image(im, parser, section_name)
+            display_type = stream_confs.get(section_name, "display_types")
+
+            my_data = get_data_from_image(im, display_type)
 
             for key in my_data.keys():
                 logger.debug(str(key) + ": " + str(my_data[key]))
-
-            players = get_players(stream_obj)
 
             if 'l_name' not in my_data:
                 logger.info("No correct conf for: " + stream_url)
@@ -332,7 +347,7 @@ def get_info_from_stream(section_name):
                 time.sleep(60)
                 continue
 
-            if not game_live(im, my_data):
+            if not game_live(my_data):
                 if game.game_on:
                     game.game_off_time = timezone.now()
                 game.game_on = False
@@ -345,6 +360,7 @@ def get_info_from_stream(section_name):
 
 #             save_images(section_name)
 
+            players = get_players(stream_obj)
             p_l = players[0]
             p_r = players[1]
 
@@ -367,28 +383,30 @@ def get_info_from_stream(section_name):
 
             logger.info("Done with loop for: " + stream_url)
             time.sleep(2)
-        except KeyboardInterrupt:
-            exit()
         except Exception as _:
             logger.error("Something went wrong for stream: " +
                          stream_url, exc_info=True)
 
 
-def get_stream_info_thread():
-    # Hacky way to pass arg
-    section_name = threading.currentThread().getName()
-    get_info_from_stream(section_name)
-
-
 if __name__ == "__main__":
-    logger.debug("Start of function")
+    logger.debug("Starting the update_state script")
     logger.debug("Deleting old streams")
-    sections = parser.sections()
+    sections = stream_confs.sections()
+    stream_names = [stream_confs.get(section, "stream_name")
+                    for section in sections]
     for stream in Stream.objects.all():
-        if stream.name not in sections:
+        if stream.name not in stream_names:
             stream.up = False
             stream.save()
-    for section in parser.sections():
+    for section in sections:
         logger.debug("Starting thread for " + section)
-        t = threading.Thread(name=section, target=get_stream_info_thread)
+        t = threading.Thread(
+            name=section, target=get_info_from_stream, args=[section])
+        t.setDaemon(True)
         t.start()
+    # Wait for a keyboard interrupt and then finish the program
+    try:
+        while threading.active_count() > 0:
+            time.sleep(0.5)
+    except KeyboardInterrupt:
+        pass
