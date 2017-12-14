@@ -275,7 +275,7 @@ def save_main_image(display_type, im):
     logger.debug("MB left: {}".format(mb_free))
     if mb_free > 3000:
         logger.debug("Saving image for display_type: {}".format(display_type))
-        save_folder = "/home/sc2ls/to_improve_images"
+        save_folder = "/home/akaiser/to_improve_images"
         mkdir_p(save_folder)
         name = ''.join(random.choice(string.ascii_lowercase + string.digits)
                        for _ in range(5))
