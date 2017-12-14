@@ -196,7 +196,9 @@ def get_players(stream_obj):
 
 
 def game_live(data):
-    if get_score(data) >= 85:
+    score = get_score(data)
+    logger.debug("Score for data: {}".format(score))
+    if score >= 85:
         return True
     else:
         return False
@@ -209,7 +211,6 @@ def get_score(data):
     """
     score = 0
     total_possible_points = 0
-    num_valid_fields = 0
 
     for field in ['l_name', 'r_name']:
         worth = 3
@@ -227,7 +228,7 @@ def get_score(data):
         worth = 1
         total_possible_points += worth
         if data[field] >= 0:
-            num_valid_fields += worth
+            score += worth
 
     return ((score * 1.0) / (total_possible_points * 1.0)) * 100.0
 
@@ -266,6 +267,19 @@ def save_images(section_name):
     mkdir_p(path)
     copyfile(image_temp_file + section_name + "/time" + '.jpeg',
              path + "/" + name + ".jpeg")
+
+
+def save_main_image(display_type, im):
+    statvfs = os.statvfs('/')
+    mb_free = (statvfs.f_frsize * statvfs.f_bavail) / (1024 * 1024)
+    logger.debug("MB left: {}".format(mb_free))
+    if mb_free > 3000:
+        logger.debug("Saving image for display_type: {}".format(display_type))
+        save_folder = "/home/sc2ls/to_improve_images"
+        mkdir_p(save_folder)
+        name = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                       for _ in range(5))
+        im.save(save_folder + "/" + display_type + "-" + name + '.jpeg')
 
 
 def get_info_from_stream(section_name):
@@ -374,7 +388,8 @@ def get_info_from_stream(section_name):
             else:
                 game.game_on = True
 
-#             save_images(section_name)
+            if get_score(my_data) != 100:
+                save_main_image(display_type, im)
 
             players = get_players(stream_obj)
             p_l = players[0]

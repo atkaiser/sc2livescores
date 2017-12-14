@@ -13,3 +13,4 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 tesseract = 
 FFMPEG_BIN = 
 conf_file = os.path.join(BASE_DIR, 'configs.conf')
+display_type_confs_dir = os.path.join(BASE_DIR, 'utils/display_type_confs')
